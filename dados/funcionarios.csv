@@ -1,0 +1,11 @@
+matricula,nome_completo,cpf,dt_nasc,dpto_empresa,cargo,salario,ativo
+1,Bruna Farias,37846290592,05/07/1998,Marketing,Estagiário,15475.42,True
+2,Jade Dias,82519670312,16/07/2000,Pesquisa e desenvolvimento,Analista,7551.22,False
+3,Olivia Oliveira,42591367043,17/03/2005,Comercial,Estagiário,2811.96,False
+4,Yuri Siqueira,04857619393,21/02/1998,Financeiro,Supervisor,3883.52,True
+5,Ana Júlia Dias,83092617568,17/02/1974,Pesquisa e desenvolvimento,Supervisor,7204.94,True
+6,Noah Vieira,83625190451,25/04/1989,Marketing,Estagiário,8980.5,False
+7,Davi Teixeira,18962054370,16/06/2003,Marketing,Estagiário,11595.29,False
+8,Eduardo Sales,02798146313,08/10/1985,Logística,Supervisor,4655.32,True
+9,Ana Laura Brito,68372094187,11/05/1970,Pesquisa e desenvolvimento,Analista,2706.0,True
+10,Davi Lucca Moreira,54362719873,26/04/1990,Pesquisa e desenvolvimento,Estagiário,2380.96,False

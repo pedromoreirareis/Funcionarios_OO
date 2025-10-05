@@ -1,0 +1,302 @@
+{
+    "1": {
+        "matricula": 1,
+        "nome_completo": "Bruna Farias",
+        "cpf": "37846290592",
+        "dt_nasc": "05/07/1998",
+        "dpto_empresa": "Marketing",
+        "cargo": "Estagiário",
+        "salario": 15475.42,
+        "ativo": true
+    },
+    "2": {
+        "matricula": 2,
+        "nome_completo": "Jade Dias",
+        "cpf": "82519670312",
+        "dt_nasc": "16/07/2000",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Analista",
+        "salario": 7551.22,
+        "ativo": false
+    },
+    "3": {
+        "matricula": 3,
+        "nome_completo": "Olivia Oliveira",
+        "cpf": "42591367043",
+        "dt_nasc": "17/03/2005",
+        "dpto_empresa": "Comercial",
+        "cargo": "Estagiário",
+        "salario": 2811.96,
+        "ativo": false
+    },
+    "4": {
+        "matricula": 4,
+        "nome_completo": "Yuri Siqueira",
+        "cpf": "04857619393",
+        "dt_nasc": "21/02/1998",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Supervisor",
+        "salario": 3883.52,
+        "ativo": true
+    },
+    "5": {
+        "matricula": 5,
+        "nome_completo": "Ana Júlia Dias",
+        "cpf": "83092617568",
+        "dt_nasc": "17/02/1974",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Supervisor",
+        "salario": 7204.94,
+        "ativo": true
+    },
+    "6": {
+        "matricula": 6,
+        "nome_completo": "Noah Vieira",
+        "cpf": "83625190451",
+        "dt_nasc": "25/04/1989",
+        "dpto_empresa": "Marketing",
+        "cargo": "Estagiário",
+        "salario": 8980.5,
+        "ativo": false
+    },
+    "7": {
+        "matricula": 7,
+        "nome_completo": "Davi Teixeira",
+        "cpf": "18962054370",
+        "dt_nasc": "16/06/2003",
+        "dpto_empresa": "Marketing",
+        "cargo": "Estagiário",
+        "salario": 11595.29,
+        "ativo": false
+    },
+    "8": {
+        "matricula": 8,
+        "nome_completo": "Eduardo Sales",
+        "cpf": "02798146313",
+        "dt_nasc": "08/10/1985",
+        "dpto_empresa": "Logística",
+        "cargo": "Supervisor",
+        "salario": 4655.32,
+        "ativo": true
+    },
+    "9": {
+        "matricula": 9,
+        "nome_completo": "Ana Laura Brito",
+        "cpf": "68372094187",
+        "dt_nasc": "11/05/1970",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Analista",
+        "salario": 2706.0,
+        "ativo": true
+    },
+    "10": {
+        "matricula": 10,
+        "nome_completo": "Davi Lucca Moreira",
+        "cpf": "54362719873",
+        "dt_nasc": "26/04/1990",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Estagiário",
+        "salario": 2380.96,
+        "ativo": false
+    },
+    "11": {
+        "matricula": 11,
+        "nome_completo": "Bruna Oliveira",
+        "cpf": "37846211234",
+        "dt_nasc": "15/08/1995",
+        "dpto_empresa": "Marketing",
+        "cargo": "Analista",
+        "salario": 5120.00,
+        "ativo": true
+    },
+    "12": {
+        "matricula": 12,
+        "nome_completo": "Ana Beatriz Farias",
+        "cpf": "83092617777",
+        "dt_nasc": "20/09/1997",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Analista",
+        "salario": 6420.30,
+        "ativo": false
+    },
+    "13": {
+        "matricula": 13,
+        "nome_completo": "Lucas Dias",
+        "cpf": "82519670456",
+        "dt_nasc": "12/12/1994",
+        "dpto_empresa": "Comercial",
+        "cargo": "Supervisor",
+        "salario": 7850.10,
+        "ativo": true
+    },
+    "14": {
+        "matricula": 14,
+        "nome_completo": "Gabriel Moreira",
+        "cpf": "54362719999",
+        "dt_nasc": "04/11/1988",
+        "dpto_empresa": "Logística",
+        "cargo": "Analista",
+        "salario": 4250.00,
+        "ativo": true
+    },
+    "15": {
+        "matricula": 15,
+        "nome_completo": "Mariana Oliveira",
+        "cpf": "42591367011",
+        "dt_nasc": "10/01/1999",
+        "dpto_empresa": "Comercial",
+        "cargo": "Estagiário",
+        "salario": 3120.75,
+        "ativo": false
+    },
+    "16": {
+        "matricula": 16,
+        "nome_completo": "Ana Clara Dias",
+        "cpf": "83092617512",
+        "dt_nasc": "23/03/1996",
+        "dpto_empresa": "Marketing",
+        "cargo": "Supervisor",
+        "salario": 7900.55,
+        "ativo": true
+    },
+    "17": {
+        "matricula": 17,
+        "nome_completo": "Pedro Brito",
+        "cpf": "68372094145",
+        "dt_nasc": "05/07/1982",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Analista",
+        "salario": 6025.20,
+        "ativo": false
+    },
+    "18": {
+        "matricula": 18,
+        "nome_completo": "Larissa Teixeira",
+        "cpf": "18962054333",
+        "dt_nasc": "19/10/2001",
+        "dpto_empresa": "Comercial",
+        "cargo": "Estagiário",
+        "salario": 2890.00,
+        "ativo": true
+    },
+    "19": {
+        "matricula": 19,
+        "nome_completo": "Bruno Vieira",
+        "cpf": "83625190477",
+        "dt_nasc": "09/09/1993",
+        "dpto_empresa": "Logística",
+        "cargo": "Supervisor",
+        "salario": 6700.45,
+        "ativo": true
+    },
+    "20": {
+        "matricula": 20,
+        "nome_completo": "Fernanda Dias",
+        "cpf": "82519670999",
+        "dt_nasc": "18/02/1990",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Supervisor",
+        "salario": 8150.60,
+        "ativo": true
+    },
+    "21": {
+        "matricula": 21,
+        "nome_completo": "André Oliveira",
+        "cpf": "42591367888",
+        "dt_nasc": "07/04/1986",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Analista",
+        "salario": 5020.00,
+        "ativo": false
+    },
+    "22": {
+        "matricula": 22,
+        "nome_completo": "Ana Luiza Farias",
+        "cpf": "37846290111",
+        "dt_nasc": "13/08/2002",
+        "dpto_empresa": "Comercial",
+        "cargo": "Estagiário",
+        "salario": 2300.00,
+        "ativo": true
+    },
+    "23": {
+        "matricula": 23,
+        "nome_completo": "Ricardo Siqueira",
+        "cpf": "04857619311",
+        "dt_nasc": "01/01/1984",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Supervisor",
+        "salario": 7200.00,
+        "ativo": true
+    },
+    "24": {
+        "matricula": 24,
+        "nome_completo": "Paula Dias",
+        "cpf": "82519670888",
+        "dt_nasc": "27/12/1991",
+        "dpto_empresa": "Marketing",
+        "cargo": "Analista",
+        "salario": 4550.10,
+        "ativo": true
+    },
+    "25": {
+        "matricula": 25,
+        "nome_completo": "Lucas Brito",
+        "cpf": "68372094112",
+        "dt_nasc": "06/06/1989",
+        "dpto_empresa": "Logística",
+        "cargo": "Supervisor",
+        "salario": 7300.00,
+        "ativo": false
+    },
+    "26": {
+        "matricula": 26,
+        "nome_completo": "João Moreira",
+        "cpf": "54362719811",
+        "dt_nasc": "29/03/1995",
+        "dpto_empresa": "Pesquisa e desenvolvimento",
+        "cargo": "Analista",
+        "salario": 6400.25,
+        "ativo": true
+    },
+    "27": {
+        "matricula": 27,
+        "nome_completo": "Maria Clara Oliveira",
+        "cpf": "42591367222",
+        "dt_nasc": "08/11/2000",
+        "dpto_empresa": "Marketing",
+        "cargo": "Estagiário",
+        "salario": 2500.00,
+        "ativo": true
+    },
+    "28": {
+        "matricula": 28,
+        "nome_completo": "Thiago Dias",
+        "cpf": "82519670777",
+        "dt_nasc": "21/05/1992",
+        "dpto_empresa": "Comercial",
+        "cargo": "Supervisor",
+        "salario": 7100.50,
+        "ativo": true
+    },
+    "29": {
+        "matricula": 29,
+        "nome_completo": "Isabela Farias",
+        "cpf": "37846290777",
+        "dt_nasc": "30/10/1996",
+        "dpto_empresa": "Financeiro",
+        "cargo": "Analista",
+        "salario": 5800.00,
+        "ativo": false
+    },
+    "30": {
+        "matricula": 30,
+        "nome_completo": "Henrique Siqueira",
+        "cpf": "04857619377",
+        "dt_nasc": "14/02/1987",
+        "dpto_empresa": "Logística",
+        "cargo": "Supervisor",
+        "salario": 7550.90,
+        "ativo": true
+    }
+}

@@ -1,0 +1,12 @@
+[ 05-10-2025 16:19:41 ] - *LOCALE* - Iniciando configuração de Locale:pt_BR.UTF-8
+[ 05-10-2025 16:19:41 ] - *LOCALE* - Locale:pt_BR.UTF-8 configurado com sucesso.
+[ 05-10-2025 16:19:41 ] - *INICIALIZOU* - Sistema iniciado com sucesso.
+[ 05-10-2025 16:19:41 ] - *CARREGAR* - Iniciando verificação de arquivos de dados.
+[ 05-10-2025 16:19:41 ] - *CARREGAR* - funcionarios.json encontrado. Solicitando importação
+[ 05-10-2025 16:19:41 ] - *IMPORTAR_JSON* - Iniciando importação do arquivo funcionarios.json
+[ 05-10-2025 16:19:41 ] - *IMPORTAR_JSON*
+[ 05-10-2025 16:19:43 ] - *LISTAR* - Iniciando listagem de funcionários...
+[ 05-10-2025 16:19:44 ] - *LISTAR* - Listagem 19 de funcionários ativos.
+[ 05-10-2025 16:19:47 ] - *LISTAR* - Listagem 11 de funcionários inativos.
+[ 05-10-2025 16:19:48 ] - *LISTAR* - Listagem todos funcionários. Total: 30 
+[ 05-10-2025 16:19:53 ] - *ENCERRANDO* - Sistema encerrado pelo usuário.
