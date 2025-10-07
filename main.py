@@ -1,4 +1,4 @@
-from utils.locale_config import configurar_locale
+from utils.locale_setup import configurar_locale
 from interface.telas import msg_print, limpar_tela
 
 

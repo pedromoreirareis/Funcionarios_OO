@@ -7,7 +7,7 @@ Locale utilizado para principalmente para tratamento de valores float, monetári
 
 import locale
 from utils import logs
-from utils.logs_constantes import LOG_LOCALE
+from utils.log_constants import LOG_LOCALE
 
 
 def configurar_locale():
