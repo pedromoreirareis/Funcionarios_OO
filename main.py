@@ -1,4 +1,9 @@
+from utils.locale_config import configurar_locale
+from interface.telas import msg_print, limpar_tela
+
+
 def main():
+
     #   Pedro Moreira
 
     limpar_tela()
@@ -6,8 +11,12 @@ def main():
     #     # 🔧 CONFIGURAR LOCALE
     # --------------------------------------------------------------------------
 
-    configurar_locale()
+    if not configurar_locale():
 
+        msg_print(
+            "⚠️   Locale 'pt_BR.UTF-8' não está disponível no sistema.",
+            "vermelho",
+        )
     # --------------------------------------------------------------------------
     #     # 🔧 Iniciando
     # --------------------------------------------------------------------------

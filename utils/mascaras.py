@@ -3,7 +3,7 @@ def somente_digitos(digitos: str) -> str:
     return "".join(ch for ch in digitos if ch.isdigit())
 
 
-def cpf(cpf: str) -> str:
+def mascara_cpf(cpf: str) -> str:
 
     cpf = somente_digitos(cpf).zfill(11)
 

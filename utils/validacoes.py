@@ -51,3 +51,85 @@ def resposta_positiva(valor):
 def resposta_negativa(valor):
 
     return valor.lower() in ["n", "nao", "não", "no", "0", "false", "inativo"]
+
+
+def identificar_campo(entrada_usuario: str) -> str:
+
+    mapa_campos = {
+        "dpto_empresa": [
+            "dpto_empresa",
+            "departamento",
+            "departamento_empresa",
+            "depart",
+            "dpto",
+            "dep",
+            "setor",
+            "área",
+            "area",
+            "secao",
+            "seção",
+            "divisão",
+            "divisao",
+            "local",
+            "local trabalho",
+        ],
+        "cargo": [
+            "cargo",
+            "funcao",
+            "função",
+            "funcao",
+            "funçao",
+            "ocupacao",
+            "ocupação",
+            "trabalho",
+            "posto",
+            "posição",
+            "posicao",
+            "tarefa",
+            "atividade",
+        ],
+        "dt_nasc": [
+            "dt_nasc",
+            "nasc",
+            "nascimento",
+            "data nascimento",
+            "ano nascimento",
+            "dt_nascimento",
+            "data",
+            "ano",
+            "data de nascimento",
+            "dn",
+        ],
+        "ativo": [
+            "ativo",
+            "status",
+            "trabalhando",
+            "empregado",
+            "situação",
+            "situacao",
+            "condição",
+            "condicao",
+            "em atividade",
+            "inativo",
+        ],
+        "salario": [
+            "salario",
+            "salário",
+            "remuneracao",
+            "remuneração",
+            "renda",
+            "vencimento",
+            "ganho",
+            "pagamento",
+            "piso salarial",
+            "faixa salarial",
+            "valor",
+            "quantia",
+        ],
+    }
+
+    entrada = entrada_usuario.strip().lower()  # normaliza
+    for campo, sinonimos in mapa_campos.items():
+        if entrada in [s.lower() for s in sinonimos]:
+            return campo
+    return ""

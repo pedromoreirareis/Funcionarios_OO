@@ -72,22 +72,3 @@ def f_exibir_func(titulo, dados):
 def msg_print(texto, cor="amarelo"):
 
     print(cor_texto(texto, cor=cor))
-
-
-def exibir_funcionario(func):
-
-    f_exibir_func("\nMatrícula:\t", func.matricula)
-    f_exibir_func("Nome:\t\t", func.nome_completo)
-    f_exibir_func("CPF:\t\t", mascara_cpf(func.cpf))
-    f_exibir_func("Departamento:\t", func.dpto_empresa)
-    f_exibir_func("Cargo:\t\t", func.cargo)
-    f_exibir_func("D. Nasc:\t", data_time_str(func.dt_nasc))
-    f_exibir_func("Salário:\t", moeda_br(func.salario))
-
-    if func.ativo:
-        status = "Ativo"
-    else:
-        status = "Inativo"
-
-    f_exibir_func("Status:\t\t", status)
-    divisor_tela("-", largura=30)
