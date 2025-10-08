@@ -1,15 +1,15 @@
 from pathlib import Path
 
-#   Diretorio base  (onde esta main.py)
-DIRETORIO_BASE = Path(__file__).resolve().parent
+# Diretório base (onde está o main.py)
+BASE_DIR = Path(__file__).resolve().parent
 
-#   Subdiretorio de dados dentro Diretório base
-DIRETORIO_DADOS = DIRETORIO_BASE / "data"
+# Subdiretório de dados dentro do diretório base
+DATA_DIR = BASE_DIR / "data"
 
-#   Se diretorio de 'dados' não existe, cria diretorio
-DIRETORIO_DADOS.mkdir(exist_ok=True)
+# Se o diretório 'data' não existe, cria o diretório
+DATA_DIR.mkdir(exist_ok=True)
 
-#   Caminho dos arquivos de persistência e log
-ARQUIVO_CSV = DIRETORIO_DADOS / "funcionarios.csv"
-ARQUIVO_JSON = DIRETORIO_DADOS / "funcionarios.json"
-ARQUIVO_LOGS = DIRETORIO_DADOS / "logs.log"
+# Caminhos dos arquivos de persistência e log
+CSV_FILE = DATA_DIR / "employees.csv"
+JSON_FILE = DATA_DIR / "employees.json"
+LOG_FILE = DATA_DIR / "logs.log"

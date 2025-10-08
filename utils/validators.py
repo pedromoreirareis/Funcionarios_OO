@@ -1,62 +1,113 @@
-def validar_cpf(cpf):
+from utils.formatters import digits_only
 
+
+def is_valid_cpf(cpf: str) -> bool:
+    """
+    Valida se o CPF é numérico e possui 11 dígitos.
+
+    Args:
+        cpf (str): CPF com ou sem pontuação.
+
+    Returns:
+        bool: True se válido, False se inválido.
+    """
     if not cpf.isdigit():
         return False
 
-    cpf_limpo = somente_digitos(cpf)
+    clean_cpf = digits_only(cpf)
 
-    if len(cpf_limpo) != 11:
+    if len(clean_cpf) != 11:
         return False
 
-    if cpf_limpo == cpf_limpo[0] * 11:
-        return False
-
-    return True
-
-
-def validar_nome(nome):
-
-    nome = nome.strip()
-
-    if not isinstance(nome, str):
-        return False
-
-    if len(nome) < 3:
-        return False
-
-    if not all(ch.isalpha() or ch.isspace() for ch in nome):
+    if clean_cpf == clean_cpf[0] * 11:
         return False
 
     return True
 
 
-def validar_dpto_cargo(dpto_cargo):
+def is_valid_name(name: str) -> bool:
+    """
+    Valida se o nome é uma string com pelo menos 3 letras.
 
-    dpto_cargo = dpto_cargo.strip()
+    Args:
+        name (str): Nome completo.
 
-    if not isinstance(dpto_cargo, str):
+    Returns:
+        bool: True se válido, False se inválido.
+    """
+    name = name.strip()
+
+    if not isinstance(name, str):
         return False
 
-    if len(dpto_cargo) < 3:
+    if len(name) < 3:
+        return False
+
+    if not all(ch.isalpha() or ch.isspace() for ch in name):
         return False
 
     return True
 
 
-def resposta_positiva(valor):
+def is_valid_role_or_department(value: str) -> bool:
+    """
+    Valida se o campo de cargo ou departamento é uma string com pelo menos 3 caracteres.
 
-    return valor.lower() in ["s", "sim", "y", "yes", "1", "true", "ativo"]
+    Args:
+        value (str): Nome do cargo ou departamento.
+
+    Returns:
+        bool: True se válido, False se inválido.
+    """
+    value = value.strip()
+
+    if not isinstance(value, str):
+        return False
+
+    if len(value) < 3:
+        return False
+
+    return True
 
 
-def resposta_negativa(valor):
+def is_affirmative(value: str) -> bool:
+    """
+    Verifica se o valor representa uma resposta positiva.
 
-    return valor.lower() in ["n", "nao", "não", "no", "0", "false", "inativo"]
+    Args:
+        value (str): Texto da resposta.
+
+    Returns:
+        bool: True se afirmativa, False caso contrário.
+    """
+    return value.lower() in ["s", "sim", "y", "yes", "1", "true", "ativo"]
 
 
-def identificar_campo(entrada_usuario: str) -> str:
+def is_negative(value: str) -> bool:
+    """
+    Verifica se o valor representa uma resposta negativa.
 
-    mapa_campos = {
-        "dpto_empresa": [
+    Args:
+        value (str): Texto da resposta.
+
+    Returns:
+        bool: True se negativa, False caso contrário.
+    """
+    return value.lower() in ["n", "nao", "não", "no", "0", "false", "inativo"]
+
+
+def identify_field(user_input: str) -> str:
+    """
+    Identifica o campo correspondente com base em sinônimos.
+
+    Args:
+        user_input (str): Texto digitado pelo usuário.
+
+    Returns:
+        str: Nome do campo identificado ou string vazia.
+    """
+    field_map = {
+        "department": [
             "dpto_empresa",
             "departamento",
             "departamento_empresa",
@@ -73,11 +124,10 @@ def identificar_campo(entrada_usuario: str) -> str:
             "local",
             "local trabalho",
         ],
-        "cargo": [
+        "role": [
             "cargo",
             "funcao",
             "função",
-            "funcao",
             "funçao",
             "ocupacao",
             "ocupação",
@@ -88,7 +138,7 @@ def identificar_campo(entrada_usuario: str) -> str:
             "tarefa",
             "atividade",
         ],
-        "dt_nasc": [
+        "birth_date": [
             "dt_nasc",
             "nasc",
             "nascimento",
@@ -100,7 +150,7 @@ def identificar_campo(entrada_usuario: str) -> str:
             "data de nascimento",
             "dn",
         ],
-        "ativo": [
+        "active": [
             "ativo",
             "status",
             "trabalhando",
@@ -112,7 +162,7 @@ def identificar_campo(entrada_usuario: str) -> str:
             "em atividade",
             "inativo",
         ],
-        "salario": [
+        "salary": [
             "salario",
             "salário",
             "remuneracao",
@@ -128,8 +178,10 @@ def identificar_campo(entrada_usuario: str) -> str:
         ],
     }
 
-    entrada = entrada_usuario.strip().lower()  # normaliza
-    for campo, sinonimos in mapa_campos.items():
-        if entrada in [s.lower() for s in sinonimos]:
-            return campo
+    normalized = user_input.strip().lower()
+
+    for field, synonyms in field_map.items():
+        if normalized in [s.lower() for s in synonyms]:
+            return field
+
     return ""

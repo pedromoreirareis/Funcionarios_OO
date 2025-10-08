@@ -15,6 +15,7 @@ class Employee:
         salary: float,
         active: bool,
     ):
+        # Inicializa os atributos do funcionário
         self.registration = registration
         self.full_name = full_name
         self.cpf = cpf
@@ -25,6 +26,9 @@ class Employee:
         self.active = active
 
     def to_dict(self):
+        """
+        Retorna os dados do funcionário como um dicionário formatado.
+        """
         return {
             "registration": self.registration,
             "full_name": self.full_name,
@@ -37,23 +41,19 @@ class Employee:
         }
 
     def from_dict(self):
-        pass  # You can implement this later if needed
+        """
+        Método reservado para popular os dados do funcionário a partir de um dicionário.
+        """
+        pass  # Implementar se necessário
 
     def deactivate(self):
+        """
+        Marca o funcionário como inativo.
+        """
         self.active = False
 
     def activate(self) -> None:
+        """
+        Marca o funcionário como ativo.
+        """
         self.active = True
-
-    def __str__(self):
-        status = "Active" if self.active else "Inactive"
-        return (
-            f"\nRegistration:\t{self.registration}\n"
-            f"Name:\t\t{self.full_name}\n"
-            f"CPF:\t\t{mask_cpf(self.cpf)}\n"
-            f"Department:\t{self.department}\n"
-            f"Position:\t{self.position}\n"
-            f"Birth Date:\t{mask_date(self.birth_date.strftime('%d%m%Y'))}\n"
-            f"Salary:\t\t{format_brl_currency(self.salary)}\n"
-            f"Status:\t\t{status}"
-        )

@@ -1,5 +1,5 @@
 from utils.locale_setup import configurar_locale
-from interface.telas import msg_print, limpar_tela
+from interface.screen import msg_print, limpar_tela
 
 
 def main():

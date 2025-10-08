@@ -1,26 +1,30 @@
-def menu():
+from interface import screen
 
-    limpar_tela()
-    titulo("📋  MENU PRINCIPAL")
+
+def main_menu():
+    """
+    Exibe o menu principal e retorna a opção escolhida.
+
+    Returns:
+        int: Número da opção escolhida ou -1 se inválida.
+    """
+    screen.clear_screen()
+    screen.show_header("📋  MAIN MENU")
+
     print("Informe a opção desejada:")
-    print("\n\t1. Inserir Funcionários")
+    print("\n\t1. Adicionar Funcionário")
     print("\t2. Listar Funcionários")
-    print("\t3. Apagar Funcionários")
+    print("\t3. Remover Funcionário")
     print("\t4. Consultar Funcionários")
-    print("\t5. Calcular folha de pagamento")
-    print("\t6. Exportar funcionários")
+    print("\t5. Calcular Folha de Pagamento")
+    print("\t6. Exportar Funcionários")
     print("\t0. Sair\n")
-    divisor_tela()
+
+    screen.draw_divider()
 
     try:
-        op = int(input("👉  Digite o número da opção:   ").strip())
+        option = int(input("👉  Digite o número da opção:   ").strip())
         print()
-        return op
-
+        return option
     except ValueError:
         return -1
-
-
-# =============================================================================
-# 🚀 Main
-# =============================================================================

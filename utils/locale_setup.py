@@ -1,71 +1,41 @@
-"""
-Configura locale em padrão brasileiro - Locale:pt_BR.UTF-8
-Caso não seja possível imprementa fallback em ambiente windows Portuguese_Brazil.1252
-
-Locale utilizado para principalmente para tratamento de valores float, monetários e data.
-"""
-
 import locale
 from utils import logs
-from utils.log_constants import LOG_LOCALE
+from utils import log_constants
 
 
-def configurar_locale():
+def setup_locale() -> bool:
     """
-    Configura o locale da aplicação para o formato brasileiro.
-
-    A função tenta definir o locale `pt_BR.UTF-8`. Caso não esteja disponível,
-     aplica um fallback para `Portuguese_Brazil.1252`, comum em sistemas Windows.
-
-    Durante o processo, mensagens de sucesso ou falha são registradas no log.
+    Configura o locale brasileiro com fallback para Windows.
 
     Returns:
-        bool:
-            - `True` se o locale `pt_BR.UTF-8` foi configurado com sucesso.
-            - `False` se foi necessário utilizar o fallback.
-
-    Side Effects:
-        - Altera a configuração global de locale da aplicação.
-        - Registra mensagens no sistema de logs.
-
-    Exemplos:
-        >>> from utils.locale_config import configurar_locale
-        >>> if not configurar_locale():
-        ...     print("⚠️ Locale brasileiro não disponível, usando fallback.")
+        bool: True se configurado com sucesso, False se usou fallback.
     """
-
-    # Regitra log no inicio da configuração de locale
-    logs.registrar_log(
-        LOG_LOCALE,
-        mensagem="Iniciando configuração de Locale:pt_BR.UTF-8",
+    # Registra log no início da configuração de locale
+    logs.log_event(
+        log_constants.LOG_LOCALE,
+        message="Iniciando configuração de Locale:pt_BR.UTF-8",
     )
 
     try:
         # Tenta definir locale padrão Linux/Unix brasileiro
         locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
 
-        # Se deu certo, registra log de sucesso
-        logs.registrar_log(
-            LOG_LOCALE,
-            mensagem="Locale:pt_BR.UTF-8 configurado com sucesso.",
+        # Registra log de sucesso
+        logs.log_event(
+            log_constants.LOG_LOCALE,
+            message="Locale:pt_BR.UTF-8 configurado com sucesso.",
         )
 
-        # Retorna True infromando que locale foi configurado com sucesso
         return True
 
     except locale.Error:
+        # Fallback para locale do Windows
+        locale.setlocale(locale.LC_ALL, "Portuguese_Brazil.1252")
 
-        # Caso não consiga "pt_BR.UTF-8", tenta fallback do windows
-        locale.setlocale(
-            locale.LC_ALL,
-            "Portuguese_Brazil.1252",
+        # Registra log informando que foi necessário fallback
+        logs.log_event(
+            log_constants.LOG_LOCALE,
+            message="Fallback - Locale 'pt_BR.UTF-8' não está disponível no sistema.",
         )
 
-        # Registra log informando sque foi necessário fallback
-        logs.registrar_log(
-            LOG_LOCALE,
-            mensagem="fallBack - Locale 'pt_BR.UTF-8' não está disponível no sistema.",
-        )
-
-        # Retorna False indicando que foi necessário falback
         return False

@@ -1,1031 +1,970 @@
-class Empresa:
+class Company:
     def __init__(self) -> None:
-        self.funcionarios = {}
-        self.max_matricula = 0
+        self.employees = {}  # Armazena funcionários por matrícula
+        self.max_registration = 0  # Última matrícula registrada
 
-    def inserir_funcionario(self, funcionario):
+    def add_employee(self, employee_data):
+        """
+        Adiciona um novo funcionário ao sistema.
 
-        def titulo_inserir():
-            limpar_tela()
-            titulo(f"➕ Cadastrar novo funcionário.")
+        Args:
+            employee_data: Dados do funcionário (não utilizados diretamente).
+        Returns:
+            None
+        """
+        def show_title():
+            clear_screen()
+            show_header("➕ Cadastrar novo funcionário.")
 
-        def msg_entrada_invalida(msg):
-            print(cor_texto(msg, "amarelo"))
-            pausar()
+        def show_invalid_input(msg):
+            print(color_text(msg, "yellow"))
+            pause()
 
-        titulo_inserir()
+        show_title()
 
-        registrar_log(
-            LOG_INSERIR,
-            mensagem=f"Iniciando cadastro de novo funcionário",
-        )
+        log_event(LOG_INSERT, message="Iniciando cadastro de novo funcionário")
 
-        #   Nome
+        # Nome
         while True:
-            titulo_inserir()
-
-            nome = input("Nome completo: ").strip()
-
-            if not (nome and validar_nome(nome)):
-                msg_entrada_invalida("\nNome inválido.\n")
+            show_title()
+            name = input("Nome completo: ").strip()
+            if not (name and is_valid_name(name)):
+                show_invalid_input("\nNome inválido.\n")
                 continue
             break
 
-        #   CPF
+        # CPF
         while True:
-
-            titulo_inserir()
-            cpf = somente_digitos(input("CPF 11 Digitos: ").strip())
-
-            if not validar_cpf(cpf):
-                msg_entrada_invalida("\nCPF inválido.\n")
+            show_title()
+            cpf = digits_only(input("CPF 11 dígitos: ").strip())
+            if not is_valid_cpf(cpf):
+                show_invalid_input("\nCPF inválido.\n")
                 continue
-
-            if any(f.cpf == cpf for f in db_func.values()):
-                print(cor_texto("\nCPF já cadastrado. ", "vermelho"))
-                print(cor_texto("\nVoltando a tela inicial. ", "amarelo"))
-                divisor_tela()
-                registrar_log(
-                    LOG_INSERIR,
-                    f"Nome: {nome} - CPF: {cpf}",
-                    f"cadastro cancelado - CPF: {cpf} - já cadastrado",
-                )
-                pausar()
+            if any(emp.cpf == cpf for emp in employee_db.values()):
+                print(color_text("\nCPF já cadastrado.", "red"))
+                print(color_text("\nVoltando à tela inicial.", "yellow"))
+                draw_divider()
+                log_event(LOG_INSERT, f"Nome: {name} - CPF: {cpf}", "Cadastro cancelado - CPF já cadastrado")
+                pause()
                 return
             break
 
-        #   Data Nascimento
+        # Data de nascimento
         while True:
-            titulo_inserir()
-
+            show_title()
             try:
-                dta_nasc = data_str_time(
-                    mascara_data(input("Nascimento (ddmmaaaa): ").strip())
-                )
+                birth_date = str_to_date(format_date(input("Nascimento (ddmmaaaa): ").strip()))
                 break
             except Exception:
-                print(cor_texto("\nData inválida", "amarelo"))
-                pausar()
+                print(color_text("\nData inválida", "yellow"))
+                pause()
 
-        #   Departamento
+        # Departamento
         while True:
-            titulo_inserir()
-            dpto = input("Departamento: ").strip() or "Geral"
-            if not validar_dpto_cargo(dpto):
-                msg_entrada_invalida("\nNome departamento inválido.\n")
+            show_title()
+            department = input("Departamento: ").strip() or "Geral"
+            if not is_valid_role_or_department(department):
+                show_invalid_input("\nNome de departamento inválido.\n")
                 continue
             break
 
-        #   Cargo
+        # Cargo
         while True:
-            titulo_inserir()
-            cargo = input("Cargo: ") or "Técnico"
-            if not validar_dpto_cargo(cargo):
-                msg_entrada_invalida("\nNome cargo inválido.\n")
+            show_title()
+            role = input("Cargo: ").strip() or "Técnico"
+            if not is_valid_role_or_department(role):
+                show_invalid_input("\nNome de cargo inválido.\n")
                 continue
             break
 
-        #   Salario
+        # Salário
         while True:
-            titulo_inserir()
-            salario_str = (
-                input("Salário (ex: 1234,56): ")
-                .strip()
-                .replace(".", "")
-                .replace(",", ".")
-            )
+            show_title()
+            salary_input = input("Salário (ex: 1234,56): ").strip().replace(".", "").replace(",", ".")
             try:
-                salario = float(salario_str)
-                if salario < 0:
-                    print(
-                        cor_texto(
-                            "⚠️  O salário não pode ser negativo.", "amarelo"
-                        )
-                    )
-                    pausar()
+                salary = float(salary_input)
+                if salary < 0:
+                    print(color_text("⚠️  O salário não pode ser negativo.", "yellow"))
+                    pause()
                     continue
                 break
             except Exception:
-                print(cor_texto("Valor inválido", "amarelo"))
-                pausar()
+                print(color_text("Valor inválido", "yellow"))
+                pause()
 
-        #   Ativo
+        # Ativo
         while True:
-            titulo_inserir()
-
-            ativo = input("Ativo? (s/n) [s, sim,true]: ").strip().lower()
-
-            if resposta_positiva(ativo):
-                ativo = True
+            show_title()
+            active_input = input("Ativo? (s/n) [s, sim, true]: ").strip().lower()
+            if is_affirmative(active_input):
+                active = True
                 break
-            if resposta_negativa(ativo):
-                ativo = False
+            if is_negative(active_input):
+                active = False
                 break
+            show_message("\n⚠️ Entrada inválida. Responda com 's' ou 'n'.")
+            pause()
 
-            else:
-                msg_print(
-                    "\n\n⚠️   Entrada inválida. Por favor, responda com 's' ou 'n'."
-                )
-                pausar()
-                continue
+        # Matrícula
+        global max_registration
+        registration = max_registration + 1
 
-        #   matricula
-        global max_matricula
-        matricula = max_matricula + 1
+        employee = Employee(registration, name, cpf, birth_date, department, role, salary, active)
+        employee_db[registration] = employee
+        max_registration = employee.registration
 
-        funcionario = Funcionario(
-            matricula, nome, cpf, dta_nasc, dpto, cargo, salario, ativo
-        )
+        clear_screen()
+        show_title()
+        display_employee(employee)
 
-        db_func[matricula] = funcionario
-        max_matricula = funcionario.matricula
+        export_employees(employee_db, include_active=True)
 
-        limpar_tela()
-        titulo_inserir()
-        exibir_funcionario(funcionario)
+        log_event(LOG_INSERT, prepare_employee_log(employee), "Funcionário adicionado com sucesso")
 
-        exportar_funcionarios(db_func, 1)
+    def deactivate_employee(self, registration_input):
+        """
+        Desativa um funcionário com base na matrícula.
 
-        registrar_log(
-            LOG_INSERIR,
-            preparar_funcionario_log(funcionario),
-            "funcionário adicionado com sucesso",
-        )
+        Args:
+            registration_input (str): Matrícula informada pelo usuário.
+        Returns:
+            None
+        """
+        log_event(LOG_DELETE, message="Iniciando exclusão lógica de funcionários...")
+        clear_screen()
+        show_header("🗑️  DESATIVAR FUNCIONÁRIOS")
 
-    def apagar_funcionario(self, matricula):
-
-        registrar_log(
-            LOG_APAGAR, mensagem="Iniciando exclusão logica de funcionários..."
-        )
-
-        limpar_tela()
-        titulo("🗑️  DESATIVAR FUNCIONÁRIOS")
-
-        if not db_func:
-            msg_print("\n❌   Nenhum funcionário cadastrado!!!", "vermelho")
-            registrar_log(
-                LOG_APAGAR, mensagem="Nenhum funcionário cadastrado!!!"
-            )
-            pausar()
+        if not employee_db:
+            show_message("\n❌ Nenhum funcionário cadastrado!", "red")
+            log_event(LOG_DELETE, message="Nenhum funcionário cadastrado!")
+            pause()
             return
 
         while True:
-            limpar_tela()
-            titulo("🗑️  DESATIVAR FUNCIONÁRIOS")
-
-            matricula = input(cor_texto("Digite a matricula: ", "amarelo"))
-
-            if not matricula.isdigit():
-                msg_print("\nMatricula inválida. Digite novamente.", "vermelho")
-                pausar()
-                limpar_tela()
+            clear_screen()
+            show_header("🗑️  DESATIVAR FUNCIONÁRIOS")
+            registration_input = input(color_text("Digite a matrícula: ", "yellow"))
+            if not registration_input.isdigit():
+                show_message("\nMatrícula inválida. Digite novamente.", "red")
+                pause()
                 continue
             break
 
-        matricula = int(matricula)
+        registration = int(registration_input)
+        employee = employee_db.get(registration)
 
-        func = db_func.get(matricula)
-
-        if not func:
-            msg_print("\nMatricula não encontrada.")
-            registrar_log(
-                "apagar_funcionario",
-                mensagem="Funcionário não cadastrado",
-            )
-            pausar()
-            return
-        if not func.ativo:
-
-            msg_print(
-                f"\nFuncionario(a):\n\n\t{func.nome_completo} de matricula {func.matricula} "
-            )
-            msg_print(f"\n\tEstá INATIVO", "vermelho")
-            registrar_log(
-                LOG_APAGAR,
-                mensagem="Funcionário já excluido",
-            )
-            pausar()
+        if not employee:
+            show_message("\nMatrícula não encontrada.")
+            log_event("deactivate_employee", message="Funcionário não cadastrado")
+            pause()
             return
 
-        exibir_funcionario(func)
+        if not employee.active:
+            show_message(f"\nFuncionário(a): {employee.full_name} de matrícula {employee.registration}")
+            show_message("\n\tEstá INATIVO", "red")
+            log_event(LOG_DELETE, message="Funcionário já excluído")
+            pause()
+            return
 
-        resposta = input(
-            f"{cor_texto('\n🤔 Tem certeza que deseja excluir? ','amarelo')} {cor_texto(func.nome_completo,'verde')} ? [s/n]  "
-        )
+        display_employee(employee)
 
-        if resposta_positiva(resposta):
+        confirm = input(f"{color_text('🤔 Tem certeza que deseja excluir? ', 'yellow')} {color_text(employee.full_name, 'green')} ? [s/n] ")
 
-            func_a_excluir = func._replace(ativo=False)
-            db_func[matricula] = func_a_excluir
+        if is_affirmative(confirm):
+            updated_employee = employee._replace(active=False)
+            employee_db[registration] = updated_employee
 
-            limpar_tela()
-            titulo("🗑️  DESATIVAR FUNCIONÁRIOS")
+            clear_screen()
+            show_header("🗑️  DESATIVAR FUNCIONÁRIOS")
 
-            exportar_funcionarios(db_func, 0)
-            registrar_log(
-                LOG_APAGAR,
-                preparar_funcionario_log(func_a_excluir),
-                mensagem="Exclusão logica de funcionários efetuada com sucesso...",
-            )
+            export_employees(employee_db, include_active=False)
+            log_event(LOG_DELETE, prepare_employee_log(updated_employee), message="Exclusão lógica efetuada com sucesso")
 
-            limpar_tela()
-            titulo("🗑️  DESATIVAR FUNCIONÁRIOS")
-
-            msg_print(f"Matricula funcionário excluido: {matricula}")
-            exibir_funcionario(db_func.get(matricula))
-            msg_print(
-                f"\nFuncionário(a) {db_func.get(matricula).nome_completo} excluido com sucesso!",
-                "verde",
-            )
-            divisor_tela("=")
-            pausar()
-
+            clear_screen()
+            show_header("🗑️  DESATIVAR FUNCIONÁRIOS")
+            show_message(f"Matrícula funcionário excluído: {registration}")
+            display_employee(employee_db.get(registration))
+            show_message(f"\nFuncionário(a) {employee_db.get(registration).full_name} excluído com sucesso!", "green")
+            draw_divider("=")
+            pause()
         else:
-            msg_print(
-                f"\nExclusão do(a) funcionário(a) {db_func.get(matricula).nome_completo} cancelada",
-                "vermelho",
-            )
-            divisor_tela("=")
-            pausar()
+            show_message(f"\nExclusão de {employee_db.get(registration).full_name} cancelada", "red")
+            draw_divider("=")
+            pause()
 
-    def consultar_funcionarios(self):
+    def search_employees(self):
+        """
+        Realiza consulta de funcionários por nome, CPF ou matrícula.
 
-        registrar_log(
-            LOG_CONSULTAR, mensagem="iniando consulta de funcionários"
-        )
+        Returns:
+            None
+        """
+        log_event(LOG_SEARCH, message="Iniciando consulta de funcionários")
+        clear_screen()
+        show_header("🔎  CONSULTAR FUNCIONÁRIOS")
 
-        limpar_tela()
-        titulo("🔎  CONSULTAR FUNCIONÁRIOS ")
-
-        if not db_func:
-            msg_print("\n❌   Nenhum funcionário cadastrado!!!", "vermelho")
-            registrar_log(
-                LOG_CONSULTAR, mensagem="Nenhum funcionário cadastrado!!!"
-            )
-            pausar()
+        if not employee_db:
+            show_message("\n❌ Nenhum funcionário cadastrado!", "red")
+            log_event(LOG_SEARCH, message="Nenhum funcionário cadastrado")
+            pause()
             return
 
         while True:
-            limpar_tela()
-            titulo("🔎  CONSULTAR FUNCIONÁRIOS ")
+            clear_screen()
+            show_header("🔎  CONSULTAR FUNCIONÁRIOS")
 
             print("1.  Nome")
             print("2.  CPF")
-            print("3.  Matricula")
+            print("3.  Matrícula")
             print("0.  Voltar")
 
-            divisor_tela("=")
-            op = input("👉  Digite o critério de busca.....: ").strip()
+            draw_divider("=")
+            option = input("👉  Digite o critério de busca.....: ").strip()
 
-            if op == "0":
+            if option == "0":
                 return
 
-            if op not in ["1", "2", "3"]:
-                msg_print("\n\nOpção inválida.")
-                pausar()
+            if option not in ["1", "2", "3"]:
+                show_message("\n\nOpção inválida.")
+                pause()
                 continue
 
-            if op == "1":
-                termo_buscado = input(
-                    f"\n👉  Digite o {cor_texto('nome',"verde")} para buscar......: "
-                )
-            elif op == "2":
-                termo_buscado = input(
-                    f"\n👉  Digite o {cor_texto('CPF',"verde")} para buscar.......: "
-                )
-            elif op == "3":
-                termo_buscado = input(
-                    f"\n👉  Digite a {cor_texto('matrícula',"verde")} para buscar.: "
-                )
+            if option == "1":
+                search_term = input(f"\n👉  Digite o {color_text('nome', 'green')} para buscar......: ")
+            elif option == "2":
+                search_term = input(f"\n👉  Digite o {color_text('CPF', 'green')} para buscar.......: ")
+            elif option == "3":
+                search_term = input(f"\n👉  Digite a {color_text('matrícula', 'green')} para buscar.: ")
 
-            # Nome
-            if op == "1":
-                termo_nome_normalizado = remover_acentos(termo_buscado).lower()
-                resultados = [
-                    f
-                    for f in db_func.values()
-                    if termo_nome_normalizado
-                    in remover_acentos(f.nome_completo).lower()
+            # Busca por nome
+            if option == "1":
+                normalized_name = remove_accents(search_term).lower()
+                results = [
+                    emp for emp in employee_db.values()
+                    if normalized_name in remove_accents(emp.full_name).lower()
                 ]
 
-            # CPF
-            elif op == "2":
-                termo_cpf = somente_digitos(termo_buscado)
-                resultados = [
-                    f
-                    for f in db_func.values()
-                    if termo_cpf in somente_digitos(f.cpf)
+            # Busca por CPF
+            elif option == "2":
+                normalized_cpf = digits_only(search_term)
+                results = [
+                    emp for emp in employee_db.values()
+                    if normalized_cpf in digits_only(emp.cpf)
                 ]
 
-            #   Matricula
+            # Busca por matrícula
             else:
-                termo_matricula = somente_digitos(termo_buscado)
-                resultados = [
-                    f
-                    for f in db_func.values()
-                    if termo_matricula in str(f.matricula)
+                normalized_registration = digits_only(search_term)
+                results = [
+                    emp for emp in employee_db.values()
+                    if normalized_registration in str(emp.registration)
                 ]
 
-            if not resultados:
-                msg_print("\n🔍 ❌  Sem resultados.", "vermelho")
-                registrar_log(LOG_CONSULTAR, f"termo = {termo_buscado}")
-                pausar()
+            if not results:
+                show_message("\n🔍 ❌  Sem resultados.", "red")
+                log_event(LOG_SEARCH, f"search_term = {search_term}")
+                pause()
                 return
 
-            # Filtros Dinamicos
-            divisor_tela("-", linha_antes=True)
-            msg_print("\nFiltros extras? campo=valor (ENTER para pular)")
+            # Filtros extras
+            draw_divider("-", before=True)
+            show_message("\nFiltros extras? campo=valor (ENTER para pular)")
 
             while True:
-
                 while True:
+                    show_message("\nEx.: ano nascimento | departamento | cargo | ativo")
+                    filter_key = input("> ").strip().lower()
+                    filter_key = identify_field(filter_key)
 
-                    msg_print(
-                        "\nEx.: ano nascimento | departamento |  cargo   | ativo"
-                    )
-
-                    chave_filtro = input(">  ").strip().lower()
-
-                    chave_filtro = identificar_campo(chave_filtro)
-
-                    print(chave_filtro)
-
-                    if chave_filtro == "":
-                        msg_print(
-                            "\nℹ️❗ Nenhum filtro selecionado!!!\n", "vermelho"
-                        )
-
+                    if filter_key == "":
+                        show_message("\nℹ️❗ Nenhum filtro selecionado!\n", "red")
                         break
 
-                    elif chave_filtro not in [
-                        "dt_nasc",
-                        "dpto_empresa",
-                        "cargo",
-                        "ativo",
-                    ]:
-                        msg_print("\n\nOpção inválida.", "vermelho")
-                        pausar()
+                    if filter_key not in ["birth_date", "department", "role", "active"]:
+                        show_message("\n\nOpção inválida.", "red")
+                        pause()
                         continue
                     break
 
-                if chave_filtro != "":
+                if filter_key != "":
+                    while True:
+                        show_message("\nPara: ano nascimento | departamento | cargo | ativo", "red")
+                        show_message("Ex..: 1992 | Comercial | Analista | true")
+                        filter_value = input("> ").strip()
+                        if len(filter_value) < 2:
+                            show_message("\n\nOpção inválida.", "red")
+                            pause()
+                            continue
+                        break
+
+                    show_message(f"\nFiltro extra de busca: {filter_key} > {filter_value}")
+                    pause()
+
+                    if filter_key not in EMPLOYEE_FIELDS:
+                        show_message("Campo inválido.")
+                        continue
+
+                    normalized_value = filter_value.lower()
+
+                    def get_field_value(employee, key):
+                        value = getattr(employee, key)
+                        if key == "birth_date":
+                            return date_to_str(value).lower()
+                        if key == "active":
+                            return "ativo" if value else "inativo"
+                        return str(value).lower()
+
+                    results = [
+                        emp for emp in results
+                        if normalized_value in get_field_value(emp, filter_key)
+                    ]
+                    if not results:
+                        break
+
+                # Campos extras
+                draw_divider("-", before=True)
+                possible_extra_fields = [
+                    field for field in EMPLOYEE_FIELDS
+                    if field not in ("registration", "full_name", "cpf")
+                ]
+                show_message(f"\nExtras (separados por vírgula) ou ENTER: {','.join(possible_extra_fields)}")
+
+                requested_fields = input("> ").strip()
+
+                if requested_fields == "":
+                    show_message("\nℹ️❗ Nenhum campo extra será exibido", "red")
+                    show_message("\nℹ️❗ Será exibido: Matrícula, Nome, CPF.\n", "green")
+
+                raw_fields = [field.strip() for field in requested_fields.split(",")]
+                identified_fields = [identify_field(field) for field in raw_fields]
+
+                extra_fields = [
+                    field for field in identified_fields
+                    if field in possible_extra_fields
+                ] if requested_fields else []
+
+                # Ordena por nome
+                results.sort(key=lambda emp: remove_accents(emp.full_name).lower())
+
+                break
+
+            draw_divider("-", before=True, after=True)
+            show_message("🔎 RESULTADOS: \n")
+
+            for emp in results:
+                display_employee_search(emp, extra_fields)
+
+            log_summary = [[emp.registration, emp.full_name] for emp in results]
+            log_event(
+                LOG_SEARCH,
+                log_summary,
+                f"search_term='{search_term}', results='{len(results)}' - sucesso"
+            )
+            pause()
+
+
+            registrar_log(
+                LOG_CONSULTAR, mensagem="iniando consulta de funcionários"
+            )
+
+            limpar_tela()
+            titulo("🔎  CONSULTAR FUNCIONÁRIOS ")
+
+            if not db_func:
+                msg_print("\n❌   Nenhum funcionário cadastrado!!!", "vermelho")
+                registrar_log(
+                    LOG_CONSULTAR, mensagem="Nenhum funcionário cadastrado!!!"
+                )
+                pausar()
+                return
+
+            while True:
+                limpar_tela()
+                titulo("🔎  CONSULTAR FUNCIONÁRIOS ")
+
+                print("1.  Nome")
+                print("2.  CPF")
+                print("3.  Matricula")
+                print("0.  Voltar")
+
+                divisor_tela("=")
+                op = input("👉  Digite o critério de busca.....: ").strip()
+
+                if op == "0":
+                    return
+
+                if op not in ["1", "2", "3"]:
+                    msg_print("\n\nOpção inválida.")
+                    pausar()
+                    continue
+
+                if op == "1":
+                    termo_buscado = input(
+                        f"\n👉  Digite o {cor_texto('nome',"verde")} para buscar......: "
+                    )
+                elif op == "2":
+                    termo_buscado = input(
+                        f"\n👉  Digite o {cor_texto('CPF',"verde")} para buscar.......: "
+                    )
+                elif op == "3":
+                    termo_buscado = input(
+                        f"\n👉  Digite a {cor_texto('matrícula',"verde")} para buscar.: "
+                    )
+
+                # Nome
+                if op == "1":
+                    termo_nome_normalizado = remover_acentos(termo_buscado).lower()
+                    resultados = [
+                        f
+                        for f in db_func.values()
+                        if termo_nome_normalizado
+                        in remover_acentos(f.nome_completo).lower()
+                    ]
+
+                # CPF
+                elif op == "2":
+                    termo_cpf = somente_digitos(termo_buscado)
+                    resultados = [
+                        f
+                        for f in db_func.values()
+                        if termo_cpf in somente_digitos(f.cpf)
+                    ]
+
+                #   Matricula
+                else:
+                    termo_matricula = somente_digitos(termo_buscado)
+                    resultados = [
+                        f
+                        for f in db_func.values()
+                        if termo_matricula in str(f.matricula)
+                    ]
+
+                if not resultados:
+                    msg_print("\n🔍 ❌  Sem resultados.", "vermelho")
+                    registrar_log(LOG_CONSULTAR, f"termo = {termo_buscado}")
+                    pausar()
+                    return
+
+                # Filtros Dinamicos
+                divisor_tela("-", linha_antes=True)
+                msg_print("\nFiltros extras? campo=valor (ENTER para pular)")
+
+                while True:
+
                     while True:
 
                         msg_print(
-                            "\nPara: ano nascimento | departamento |  cargo   | ativo",
-                            "vermelho",
+                            "\nEx.: ano nascimento | departamento |  cargo   | ativo"
                         )
-                        msg_print(
-                            f"Ex..:    1992        |  Comercial   | Analista |  true "
-                        )
-                        valor_filtro = input(">  ").strip()
-                        if len(valor_filtro) < 2:
+
+                        chave_filtro = input(">  ").strip().lower()
+
+                        chave_filtro = identificar_campo(chave_filtro)
+
+                        print(chave_filtro)
+
+                        if chave_filtro == "":
+                            msg_print(
+                                "\nℹ️❗ Nenhum filtro selecionado!!!\n", "vermelho"
+                            )
+
+                            break
+
+                        elif chave_filtro not in [
+                            "dt_nasc",
+                            "dpto_empresa",
+                            "cargo",
+                            "ativo",
+                        ]:
                             msg_print("\n\nOpção inválida.", "vermelho")
                             pausar()
                             continue
                         break
 
-                    msg_print(
-                        f"\nFiltro extra de busca: {chave_filtro} > {valor_filtro}"
-                    )
-                    pausar()
+                    if chave_filtro != "":
+                        while True:
 
-                    if chave_filtro not in CAMPOS_FUNCIONARIO:
-                        msg_print("Campo inválido.")
-                        continue
+                            msg_print(
+                                "\nPara: ano nascimento | departamento |  cargo   | ativo",
+                                "vermelho",
+                            )
+                            msg_print(
+                                f"Ex..:    1992        |  Comercial   | Analista |  true "
+                            )
+                            valor_filtro = input(">  ").strip()
+                            if len(valor_filtro) < 2:
+                                msg_print("\n\nOpção inválida.", "vermelho")
+                                pausar()
+                                continue
+                            break
 
-                    valor_normalizado = valor_filtro.lower()
+                        msg_print(
+                            f"\nFiltro extra de busca: {chave_filtro} > {valor_filtro}"
+                        )
+                        pausar()
 
-                    def campo_valor(funcionario, chave_filtro):
-                        valor_filtro = getattr(funcionario, chave_filtro)
+                        if chave_filtro not in CAMPOS_FUNCIONARIO:
+                            msg_print("Campo inválido.")
+                            continue
 
-                        if chave_filtro == "dt_nasc":
-                            return data_time_str(valor_filtro).lower()
-                        if chave_filtro == "ativo":
-                            return "ativo" if valor_filtro else "inativo"
-                        return str(valor_filtro).lower()
+                        valor_normalizado = valor_filtro.lower()
 
-                    resultados = [
-                        f
-                        for f in resultados
-                        if valor_normalizado in campo_valor(f, chave_filtro)
+                        def campo_valor(funcionario, chave_filtro):
+                            valor_filtro = getattr(funcionario, chave_filtro)
+
+                            if chave_filtro == "dt_nasc":
+                                return data_time_str(valor_filtro).lower()
+                            if chave_filtro == "ativo":
+                                return "ativo" if valor_filtro else "inativo"
+                            return str(valor_filtro).lower()
+
+                        resultados = [
+                            f
+                            for f in resultados
+                            if valor_normalizado in campo_valor(f, chave_filtro)
+                        ]
+                        if not resultados:
+                            break
+
+                    divisor_tela("-", linha_antes=True)
+                    campos_extras_possiveis = [
+                        campos_extras
+                        for campos_extras in CAMPOS_FUNCIONARIO
+                        if campos_extras
+                        not in ("matricula", "nome_completo", "cpf")
                     ]
-                    if not resultados:
-                        break
-
-                divisor_tela("-", linha_antes=True)
-                campos_extras_possiveis = [
-                    campos_extras
-                    for campos_extras in CAMPOS_FUNCIONARIO
-                    if campos_extras
-                    not in ("matricula", "nome_completo", "cpf")
-                ]
-                msg_print(
-                    f"\nExtras ( , - virgula) ou ENTER: {','.join(campos_extras_possiveis)}"
-                )
-
-                campos_extras_solicitados = input("> ").strip()
-
-                if campos_extras_solicitados == "":
                     msg_print(
-                        "\nℹ️❗ Nenhum campo extra será exibido", "vermelho"
-                    )
-                    msg_print(
-                        "\nℹ️❗ Sera exibido: Matricula, Nome, CPF.\n", "verde"
+                        f"\nExtras ( , - virgula) ou ENTER: {','.join(campos_extras_possiveis)}"
                     )
 
-                lista_campos_solicitados = [
-                    campos for campos in campos_extras_solicitados.split(",")
-                ]
+                    campos_extras_solicitados = input("> ").strip()
 
-                lista_campos_solicitados_identificado = [
-                    identificar_campo(campos)
-                    for campos in lista_campos_solicitados
-                ]
+                    if campos_extras_solicitados == "":
+                        msg_print(
+                            "\nℹ️❗ Nenhum campo extra será exibido", "vermelho"
+                        )
+                        msg_print(
+                            "\nℹ️❗ Sera exibido: Matricula, Nome, CPF.\n", "verde"
+                        )
 
-                campos_extras = (
-                    [
-                        extra.strip()
-                        for extra in lista_campos_solicitados_identificado
-                        if extra in campos_extras_possiveis
+                    lista_campos_solicitados = [
+                        campos for campos in campos_extras_solicitados.split(",")
                     ]
-                    if campos_extras_solicitados
-                    else []
+
+                    lista_campos_solicitados_identificado = [
+                        identificar_campo(campos)
+                        for campos in lista_campos_solicitados
+                    ]
+
+                    campos_extras = (
+                        [
+                            extra.strip()
+                            for extra in lista_campos_solicitados_identificado
+                            if extra in campos_extras_possiveis
+                        ]
+                        if campos_extras_solicitados
+                        else []
+                    )
+
+                    # Ordena por nome
+                    resultados.sort(
+                        key=lambda f: remover_acentos(f.nome_completo).lower()
+                    )
+
+                    break
+
+                divisor_tela("-", linha_antes=True, linha_depois=True)
+                msg_print("🔎 RESULTADOS: \n")
+
+                for funcionario in resultados:
+                    exibir_funcionario_consulta(funcionario, campos_extras)
+
+                resultdos_log = [
+                    [func.matricula, func.nome_completo] for func in resultados
+                ]
+                registrar_log(
+                    LOG_CONSULTAR,
+                    resultdos_log,
+                    f"termo_buscado='{termo_buscado}', nresultados = '{len(resultados)}' - sucesso",
                 )
+                pausar()
 
-                # Ordena por nome
-                resultados.sort(
-                    key=lambda f: remover_acentos(f.nome_completo).lower()
-                )
+    def list_employees(self, status="all"):
+        """
+        Exibe lista de funcionários filtrando por status.
 
-                break
+        Args:
+            status (str): 'active', 'inactive' ou 'all'.
 
-            divisor_tela("-", linha_antes=True, linha_depois=True)
-            msg_print("🔎 RESULTADOS: \n")
+        Returns:
+            None
+        """
+        log_event(LOG_LIST, message="Iniciando listagem de funcionários...")
 
-            for funcionario in resultados:
-                exibir_funcionario_consulta(funcionario, campos_extras)
-
-            resultdos_log = [
-                [func.matricula, func.nome_completo] for func in resultados
-            ]
-            registrar_log(
-                LOG_CONSULTAR,
-                resultdos_log,
-                f"termo_buscado='{termo_buscado}', nresultados = '{len(resultados)}' - sucesso",
-            )
-            pausar()
-
-    def listar_funcionarios(self, status="todos"):
-
-        registrar_log(
-            LOG_LISTAR, mensagem="Iniciando listagem de funcionários..."
-        )
-
-        if not db_func:
-            limpar_tela()
-            titulo("📋  LISTAGEM FUNCIONÁRIOS")
-
-            msg_print("\n\n❌   Nenhum funcionário cadastrado!!!", "vermelho")
-            registrar_log(
-                LOG_LISTAR, mensagem="Nenhum funcionário cadastrado!!!"
-            )
-            pausar()
-
+        if not employee_db:
+            clear_screen()
+            show_header("📋  LISTAGEM FUNCIONÁRIOS")
+            show_message("\n❌ Nenhum funcionário cadastrado!", "red")
+            log_event(LOG_LIST, message="Nenhum funcionário cadastrado!")
+            pause()
             return
 
         while True:
+            clear_screen()
+            show_header("📋  LISTAGEM FUNCIONÁRIOS")
 
-            limpar_tela()
-            titulo("📋  LISTAGEM FUNCIONÁRIOS")
+            print("1. Ativos\n2. Inativos\n3. Todos\n0. Voltar ao menu principal")
+            draw_divider("=", before=True)
 
-            print(
-                "1. Ativos\n2. Inativos\n3. Todos\n0. Voltar ao menu principal"
-            )
+            option = input("👉  Escolha uma opção: ").strip()
 
-            divisor_tela("=", linha_antes=True)
-            op = input("👉  Escolha uma opção: ").strip()
-
-            if op == "1":
-                filtro = "ativos"
-            elif op == "2":
-                filtro = "inativos"
-            elif op == "3":
-                filtro = "todos"
-            elif op == "0":
+            if option == "1":
+                filter_status = "active"
+            elif option == "2":
+                filter_status = "inactive"
+            elif option == "3":
+                filter_status = "all"
+            elif option == "0":
                 return
             else:
-                print(
-                    f"\n⚠️  {cor_texto(' Atenção:','amarelo')} Opção inválida.\n"
-                )
-                pausar()
+                print(f"\n⚠️  {color_text('Atenção:', 'yellow')} Opção inválida.\n")
+                pause()
                 continue
 
-            # Não tinha pensado sobre se a lista crescer muito, que vou percorrer a lista duas vezes
-
-            if filtro == "ativos":
-
-                func_filtrados = [
-                    func for func in db_func.values() if func.ativo
+            # Filtra funcionários conforme o status selecionado
+            if filter_status == "active":
+                filtered_employees = [
+                    emp for emp in employee_db.values() if emp.active
                 ]
-                func_filtrados.sort(
-                    key=lambda f: remover_acentos(f.nome_completo)
-                )
+                filtered_employees.sort(key=lambda e: remove_accents(e.full_name))
+                log_event(LOG_LIST, message=f"Listagem de {len(filtered_employees)} funcionários ativos.")
 
-                registrar_log(
-                    LOG_LISTAR,
-                    mensagem=f"Listagem {len(func_filtrados)} de funcionários ativos.",
-                )
-
-            elif filtro == "inativos":
-
-                func_filtrados = [
-                    func for func in db_func.values() if not func.ativo
+            elif filter_status == "inactive":
+                filtered_employees = [
+                    emp for emp in employee_db.values() if not emp.active
                 ]
-                func_filtrados.sort(
-                    key=lambda f: remover_acentos(f.nome_completo)
-                )
-                registrar_log(
-                    LOG_LISTAR,
-                    mensagem=f"Listagem {len(func_filtrados)} de funcionários inativos.",
-                )
+                filtered_employees.sort(key=lambda e: remove_accents(e.full_name))
+                log_event(LOG_LIST, message=f"Listagem de {len(filtered_employees)} funcionários inativos.")
+
             else:
+                filtered_employees = sorted(
+                    employee_db.values(),
+                    key=lambda e: (not e.active, remove_accents(e.full_name)),
+                )
+                log_event(LOG_LIST, message=f"Listagem de todos os funcionários. Total: {len(filtered_employees)}")
 
-                func_filtrados = sorted(
-                    db_func.values(),
-                    key=lambda f: (
-                        not f.ativo,
-                        remover_acentos(f.nome_completo),
-                    ),
+            def show_count(employee_list):
+                show_message(
+                    f"\n📋 Lista de Funcionários: {len(employee_list)} encontrados.",
+                    "green",
                 )
 
-                registrar_log(
-                    LOG_LISTAR,
-                    mensagem=f"Listagem todos funcionários. Total: {len(func_filtrados)} ",
-                )
+            show_count(filtered_employees)
+            draw_divider("-", after=True)
 
-            def list_quant(dict_func):
-                msg_print(
-                    f"\n📋  Lista de Funcionários. {len(dict_func)} funcionários listados.",
-                    "verde",
-                )
+            for emp in filtered_employees:
+                display_employee(emp)
 
-            list_quant(func_filtrados)
+            show_count(filtered_employees)
+            pause()
 
-            divisor_tela("-", linha_depois=True)
+    def calculate_payroll(self):
+        """
+        Calcula o valor total da folha de pagamento dos funcionários ativos.
 
-            for func in func_filtrados:
+        Returns:
+            None
+        """
+        clear_screen()
+        show_header("💰  FOLHA DE PAGAMENTO")
 
-                exibir_funcionario(func)
+        log_event(LOG_PAYROLL, "Iniciando folha de pagamento")
 
-            list_quant(func_filtrados)
-
-            pausar()
-
-    def calcular_folha(self):
-
-        limpar_tela()
-        titulo("💰  FOLHA DE PAGAMENTO")
-
-        registrar_log(
-            LOG_FOLHA,
-            "Iniciando folha de pagamento",
-        )
-
-        if not db_func:
-
-            divisor_tela(linha_antes=True)
-            msg_print("\n📄 Calculando folha de pagamento...")
-            divisor_tela("-")
-
-            msg_print("\n\n❌   Nenhum funcionário cadastrado!!!", "vermelho")
-            msg_print("\n⚠️   Não foi possível calcular folha de sálario.")
-
-            registrar_log(
-                LOG_FOLHA, mensagem="Nenhum funcionário cadastrado!!!"
-            )
-            pausar()
-
+        if not employee_db:
+            draw_divider(before=True)
+            show_message("\n📄 Calculando folha de pagamento...")
+            draw_divider("-")
+            show_message("\n❌ Nenhum funcionário cadastrado!", "red")
+            show_message("\n⚠️ Não foi possível calcular a folha.")
+            log_event(LOG_PAYROLL, message="Nenhum funcionário cadastrado")
+            pause()
             return
 
-        divisor_tela(linha_antes=True)
-        msg_print("\n📄 Calculando folha de pagamento...")
-        divisor_tela("-")
+        draw_divider(before=True)
+        show_message("\n📄 Calculando folha de pagamento...")
+        draw_divider("-")
 
-        func_ativos = [func.salario for func in db_func.values() if func.ativo]
+        active_salaries = [emp.salary for emp in employee_db.values() if emp.active]
+        total_payroll = sum(active_salaries)
 
-        valor_folha = sum(func_ativos)
-
-        msg_print(
-            f"\n✅  Folha de pagamento de {datetime.now().strftime("%B")} calculada com sucesso!",
-            "verde",
+        show_message(
+            f"\n✅ Folha de pagamento de {datetime.now().strftime('%B')} calculada com sucesso!",
+            "green",
         )
+        draw_divider("-")
+        show_message(f"\n👷 Total de funcionários:\t{len(active_salaries)}", "green")
+        show_message(f"\n💰 Valor total:\t\t{format_brl_currency(total_payroll)} 💵", "green")
+        draw_divider("=")
 
-        divisor_tela("-")
-
-        msg_print(
-            f"\n👷  Total de funcionários:\t{len(func_ativos)} funcionários.",
-            "verde",
-        )
-        msg_print(
-            f"\n💰  Folha de pagamento:\t\t{moeda_br(valor_folha)}  💵", "verde"
-        )
-
-        divisor_tela("=")
-
-        lista_folha_log = [
-            [func.matricula, func.nome_completo, func.salario]
-            for func in db_func.values()
-            if func.ativo
+        payroll_log = [
+            [emp.registration, emp.full_name, emp.salary]
+            for emp in employee_db.values()
+            if emp.active
         ]
-        registrar_log(
-            LOG_FOLHA,
-            str(lista_folha_log),
-            "Folha de salário calculada com sucesso",
-        )
+        log_event(LOG_PAYROLL, str(payroll_log), "Folha calculada com sucesso")
+        pause()
 
-        pausar()
+    def import_csv(self, path):
+        """
+        Importa dados de funcionários a partir de um arquivo CSV.
 
-    def importar_csv(self, caminho):
+        Args:
+            path (str): Caminho do arquivo CSV.
 
-        msg_print(f"\n⏳  Importando dados do arquivo {ARQUIVO_CSV.name}")
-        divisor_tela(caractere="-")
+        Returns:
+            None
+        """
+        show_message(f"\n⏳ Importando dados do arquivo {CSV_FILE.name}")
+        draw_divider("-")
 
-        registrar_log(
-            LOG_IMPORTAR_C,
-            mensagem=f"Iniciando importação do arquivo {ARQUIVO_CSV.name}",
-        )
+        log_event(LOG_IMPORT_CSV, message=f"Iniciando importação do arquivo {CSV_FILE.name}")
 
-        global max_matricula
-
-        quant_func_import = 0
+        global max_registration
+        imported_count = 0
 
         try:
+            with open(CSV_FILE, "r", encoding="utf-8") as csv_file:
+                reader = csv.DictReader(csv_file)
 
-            with open(ARQUIVO_CSV, "r", encoding="utf-8") as arquivo_csv:
-                leitor_csv = csv.DictReader(arquivo_csv)
-
-                for linha in leitor_csv:
-
+                for row in reader:
                     try:
-                        matricula = int(linha["matricula"].strip())
-                        nome_completo = linha["nome_completo"].strip()
-                        cpf = linha["cpf"].strip()
-                        dt_nasc = data_str_time(linha["dt_nasc"].strip())
-                        dpto_empresa = linha["dpto_empresa"].strip()
-                        cargo = linha["cargo"].strip()
-                        salario = float(linha["salario"].strip())
-                        ativo = linha["ativo"].lower() == "true"
+                        registration = int(row["matricula"].strip())
+                        full_name = row["nome_completo"].strip()
+                        cpf = row["cpf"].strip()
+                        birth_date = str_to_date(row["dt_nasc"].strip())
+                        department = row["dpto_empresa"].strip()
+                        role = row["cargo"].strip()
+                        salary = float(row["salario"].strip())
+                        active = row["ativo"].lower() == "true"
 
-                        funcionario = Funcionario(
-                            matricula,
-                            nome_completo,
-                            cpf,
-                            dt_nasc,
-                            dpto_empresa,
-                            cargo,
-                            salario,
-                            ativo,
+                        employee = Employee(
+                            registration, full_name, cpf, birth_date,
+                            department, role, salary, active
                         )
 
-                        db_func[funcionario.matricula] = funcionario
+                        employee_db[employee.registration] = employee
 
-                        if matricula > max_matricula:
-                            max_matricula = matricula
+                        if registration > max_registration:
+                            max_registration = registration
 
-                        quant_func_import += 1
+                        imported_count += 1
 
                     except ValueError:
-
-                        msg_print(
-                            f"\n⁉️⚠️  Erro de conversão de dados para matrícula: {linha.get('matricula')}"
-                        )
-
-                        registrar_log(
-                            LOG_IMPORTAR_C,
-                            mensagem="Erro de conversão de tipos (ValueError)",
-                        )
-
-                        divisor_tela("X")
+                        show_message(f"\n⁉️⚠️ Erro de conversão para matrícula: {row.get('matricula')}")
+                        log_event(LOG_IMPORT_CSV, message="Erro de conversão de tipos (ValueError)")
+                        draw_divider("X")
 
                     except KeyError as e:
+                        show_message(f"\n⁉️⚠️ Campo ausente no CSV: {e}")
+                        log_event(LOG_IMPORT_CSV, message="Campo ausente no CSV (KeyError)")
+                        draw_divider("X")
 
-                        msg_print(f"\n⁉️⚠️  Campo ausente no CSV: {e}")
-
-                        registrar_log(
-                            LOG_IMPORTAR_C,
-                            mensagem="Campo ausente no CSV (KeyError)",
-                        )
-
-                        divisor_tela("X")
-
-                msg_print(
-                    f"\n✅  {quant_func_import} funcionários carregados do CSV!",
-                    "verde",
-                )
-
-                divisor_tela("=")
-
-                registrar_log(
-                    LOG_IMPORTAR_C,
-                    f"{quant_func_import} funcionários importados com sucesso",
-                )
+            show_message(f"\n✅ {imported_count} funcionários carregados do CSV!", "green")
+            draw_divider("=")
+            log_event(LOG_IMPORT_CSV, f"{imported_count} funcionários importados com sucesso")
 
         except FileNotFoundError:
-
-            msg_print(
-                f"\n⁉️⚠️  Erro: arquivo CSV não encontrado! Arquivo: '{ARQUIVO_CSV}'",
-                "vermelho",
-            )
-
-            registrar_log(
-                LOG_IMPORTAR_C,
-                mensagem=f"Arquivo CSV não encontrado! Arquivo: '{ARQUIVO_CSV}'",
-            )
+            show_message(f"\n⁉️⚠️ Arquivo CSV não encontrado: '{CSV_FILE}'", "red")
+            log_event(LOG_IMPORT_CSV, message=f"Arquivo CSV não encontrado: '{CSV_FILE}'")
 
         except Exception:
+            show_message("\n⁉️⚠️🚨 Erro inesperado ao importar o CSV.", "red")
+            log_event(LOG_IMPORT_CSV, message="Erro inesperado (Exception)")
 
-            msg_print(
-                "\n⁉️⚠️🚨  Ocorreu um erro inesperado ao importar o CSV.",
-                "vermelho",
-            )
-            registrar_log(
-                LOG_IMPORTAR_C, mensagem="Erro inesperado (Exception)"
-            )
+        export_employees(employee_db)
 
-        exportar_funcionarios(db_func)
+    def import_json(self, path):
+        """
+        Importa dados de funcionários a partir de um arquivo JSON.
 
-    def importar_json(self, caminho):
+        Args:
+            path (str): Caminho do arquivo JSON.
 
-        msg_print(f"\n📄 Importando dados do arquivo {ARQUIVO_JSON.name}...")
-        divisor_tela("-", linha_depois=True)
+        Returns:
+            None
+        """
+        show_message(f"\n📄 Importando dados do arquivo {JSON_FILE.name}...")
+        draw_divider("-", after=True)
 
-        registrar_log(
-            LOG_IMPORTAR_J,
-            mensagem=f"Iniciando importação do arquivo {ARQUIVO_JSON.name}",
-        )
+        log_event(LOG_IMPORT_JSON, message=f"Iniciando importação do arquivo {JSON_FILE.name}")
 
-        global max_matricula
-        quant_func_import = 0
+        global max_registration
+        imported_count = 0
 
         try:
-
-            with open(ARQUIVO_JSON, "r", encoding="utf-8") as arquivo_json:
-
-                dados_json = json.load(arquivo_json)
+            with open(JSON_FILE, "r", encoding="utf-8") as json_file:
+                data = json.load(json_file)
 
                 try:
-                    for matricula, dados_funcionario in dados_json.items():
-
-                        funcionario = Funcionario(
-                            int(dados_funcionario["matricula"]),
-                            dados_funcionario["nome_completo"],
-                            dados_funcionario["cpf"],
-                            data_str_time(
-                                dados_funcionario["dt_nasc"]
-                            ),  # str -> datetime
-                            dados_funcionario["dpto_empresa"],
-                            dados_funcionario["cargo"],
-                            float(dados_funcionario["salario"]),
-                            bool(dados_funcionario["ativo"]),
+                    for registration, emp_data in data.items():
+                        employee = Employee(
+                            int(emp_data["matricula"]),
+                            emp_data["nome_completo"],
+                            emp_data["cpf"],
+                            str_to_date(emp_data["dt_nasc"]),
+                            emp_data["dpto_empresa"],
+                            emp_data["cargo"],
+                            float(emp_data["salario"]),
+                            bool(emp_data["ativo"]),
                         )
 
-                        db_func[funcionario.matricula] = funcionario
+                        employee_db[employee.registration] = employee
 
-                        if funcionario.matricula > max_matricula:
-                            max_matricula = funcionario.matricula
+                        if employee.registration > max_registration:
+                            max_registration = employee.registration
 
-                        quant_func_import += 1
+                        imported_count += 1
 
                 except ValueError as e:
-
-                    msg_print(
-                        f"\n⁉️⚠️  Erro de conversão de dados para matrícula {matricula}: {e}"
-                    )
-                    registrar_log(
-                        LOG_IMPORTAR_J,
-                        mensagem=f"\n⁉️⚠️ Erro de conversão de tipos para matrícula {matricula}",
-                    )
-
-                    divisor_tela("X")
+                    show_message(f"\n⁉️⚠️ Erro de conversão para matrícula {registration}: {e}")
+                    log_event(LOG_IMPORT_JSON, message=f"Erro de conversão para matrícula {registration}")
+                    draw_divider("X")
 
                 except KeyError as e:
+                    show_message(f"\n⁉️⚠️ Campo ausente para matrícula {registration}: {e}")
+                    log_event(LOG_IMPORT_JSON, message=f"Campo ausente para matrícula {registration}")
+                    draw_divider("X")
 
-                    msg_print(
-                        f"\n⁉️⚠️  Campo ausente para matrícula {matricula}: {e}"
-                    )
-                    registrar_log(
-                        LOG_IMPORTAR_J,
-                        mensagem=f"Campo ausente para matrícula {matricula}",
-                    )
-                    divisor_tela("X")
+            show_message(f"✅ {imported_count} funcionários importados do arquivo {JSON_FILE.name}", "green")
+            draw_divider("=")
+            log_event(LOG_IMPORT_JSON, f"{imported_count} funcionários importados com sucesso")
 
-            msg_print(
-                f"✅ {quant_func_import} funcionários importados do arquivo {ARQUIVO_JSON.name}",
-                "verde",
-            )
+        except FileNotFoundError:
+            show_message(f"\n❌ Arquivo {JSON_FILE.name} não encontrado.", "red")
+            log_event(LOG_IMPORT_JSON, message=f"Arquivo {JSON_FILE.name} não encontrado")
 
-            divisor_tela("=")
+        except json.JSONDecodeError:
+            show_message(f"\n❌ Erro ao decodificar JSON: {JSON_FILE.name}", "red")
+            log_event(LOG_IMPORT_JSON, message="Erro de decodificação JSON")
 
-            registrar_log(
-                LOG_IMPORTAR_J,
-                f"{quant_func_import} funcionários importados com sucesso",
-            )
+        except Exception:
+            show_message(f"\n⁉️⚠️🚨 Erro inesperado ao importar {JSON_FILE.name}.", "red")
+            log_event(LOG_IMPORT_JSON, message="Erro inesperado (Exception)")
 
-        except FileNotFoundError as e:
-            msg_print(
-                f"\n❌  Arquivo: {ARQUIVO_JSON.name} não encontrado.",
-                "vermelho",
-            )
-            registrar_log(
-                LOG_IMPORTAR_J,
-                mensagem=f"Arquivo {ARQUIVO_JSON.name} não encontrado",
-            )
+    def export_employees(self, path, status=None):
+        """
+        Exporta os dados dos funcionários para arquivo JSON.
 
-        except json.JSONDecodeError as e:
-            msg_print(
-                f"\n❌  Erro ao decodificar JSON:  Arquivo: {ARQUIVO_JSON.name}",
-                "vermelho",
-            )
-            registrar_log(LOG_IMPORTAR_J, mensagem="Erro de decodificação JSON")
+        Args:
+            path (str): Caminho do arquivo.
+            status (int | None): Define mensagem de sucesso (1=cadastro, 0=exclusão).
 
-        except Exception as e:
-            msg_print(
-                f"\n⁉️⚠️🚨  Ocorreu um erro inesperado ao importar {ARQUIVO_JSON.name}.",
-                "vermelho",
-            )
-            registrar_log(
-                LOG_IMPORTAR_J, mensagem="Erro inesperado (Exception)"
-            )
+        Returns:
+            None
+        """
+        show_header("💾 Exportando dados para arquivo JSON.")
+        print(color_text(f"\n📝 Exportando dados para {JSON_FILE.name}...", "yellow"))
+        draw_divider("-", after=True)
 
-    def exportar_funcionarios(self, caminho, status=None):
-
-        titulo(f"💾 Exportando dados para arquivo JSON.")
-        print(
-            cor_texto(
-                f"\n📝  Exportando dados para {ARQUIVO_JSON.name}...", "amarelo"
-            )
-        )
-        divisor_tela("-", linha_depois=True)
-
-        registrar_log(
-            LOG_EXPORTAR,
-            mensagem=f"Iniciando Exportação para {ARQUIVO_JSON.name}",
-        )
+        log_event(LOG_EXPORT, message=f"Iniciando exportação para {JSON_FILE.name}")
 
         try:
-
-            with open(ARQUIVO_JSON, "w", encoding="utf-8") as arquivo:
+            with open(JSON_FILE, "w", encoding="utf-8") as file:
                 json.dump(
-                    preparar_exportar_json(db_func),
-                    arquivo,
+                    prepare_json_export(employee_db),
+                    file,
                     ensure_ascii=False,
                     indent=4,
                 )
 
             if status == 1:
-                msg_print("\n✅  Funcionário cadastrado com sucesso!", "verde")
+                show_message("\n✅ Funcionário cadastrado com sucesso!", "green")
+            elif status == 0:
+                show_message("\n✅ Funcionário excluído com sucesso!", "green")
+            else:
+                show_message(f"\n✅ {len(employee_db)} funcionários exportados com sucesso!", "green")
 
-            if status == 0:
-                msg_print(f"\n✅  Funcionário excluido com sucesso!", "verde")
-
-            if status == None:
-                msg_print(
-                    f"\n✅  {len(db_func)} funcionários exportados com sucesso!",
-                    "verde",
-                )
-
-            divisor_tela("=")
-
-            registrar_log(
-                LOG_EXPORTAR,
-                mensagem=f"{len(db_func)} funcionários exportados com sucesso.",
-            )
-
-            pausar()
+            draw_divider("=")
+            log_event(LOG_EXPORT, message=f"{len(employee_db)} funcionários exportados com sucesso.")
+            pause()
 
         except FileNotFoundError:
-
-            registrar_log(
-                LOG_EXPORTAR,
-                mensagem="Arquivo ou diretório não encontrado.",
-            )
+            log_event(LOG_EXPORT, message="Arquivo ou diretório não encontrado.")
 
         except PermissionError:
-
-            registrar_log(
-                LOG_EXPORTAR,
-                mensagem="Permissão negada para escrever o arquivo.",
-            )
+            log_event(LOG_EXPORT, message="Permissão negada para escrever o arquivo.")
 
         except TypeError:
-
-            registrar_log(
-                LOG_EXPORTAR,
-                mensagem="Erro de serialização JSON.",
-            )
+            log_event(LOG_EXPORT, message="Erro de serialização JSON.")
 
         except OSError:
+            log_event(LOG_EXPORT, message="Erro de I/O ao gravar arquivo JSON.")
 
-            registrar_log(
-                LOG_EXPORTAR,
-                mensagem="Erro de I/O ao gravar arquivo JSON.",
-            )
+    def load_data(self):
+        """
+        Carrega os dados dos funcionários a partir de arquivos JSON ou CSV.
 
-    def carregar_dados(self):
+        Returns:
+            None
+        """
+        log_event(LOG_LOAD, message="Iniciando verificação de arquivos de dados.")
 
-        registrar_log(
-            LOG_CARREGAR, mensagem="Iniciando verificação de arquivos de dados."
-        )
-
-        # Verifica se o arquivo existe e se não está vazio
-        if (
-            ARQUIVO_JSON.exists()
-            and ARQUIVO_JSON.is_file()
-            and ARQUIVO_JSON.stat().st_size > 0
-        ):
-
-            msg_print(
-                f"\n📄 Arquivo '{ARQUIVO_JSON.name}' encontrado...", "verde"
-            )
-            divisor_tela(caractere="-")
-
-            registrar_log(
-                LOG_CARREGAR,
-                mensagem=f"{ARQUIVO_JSON.name} encontrado. Solicitando importação",
-            )
-
-            importar_json(db_Funcionarios)
+        # Verifica se o arquivo JSON existe e contém dados
+        if JSON_FILE.exists() and JSON_FILE.is_file() and JSON_FILE.stat().st_size > 0:
+            show_message(f"\n📄 Arquivo '{JSON_FILE.name}' encontrado...", "green")
+            draw_divider("-")
+            log_event(LOG_LOAD, message=f"{JSON_FILE.name} encontrado. Solicitando importação")
+            import_json(employee_db)
 
         else:
+            show_message(f"\n📄 Arquivo '{JSON_FILE.name}' não encontrado.", "red")
+            show_message(f"\n📄 Tentando importar o arquivo {CSV_FILE.name}.")
 
-            msg_print(
-                f"\n📄  Arquivo '{ARQUIVO_JSON.name}' não encontrado.",
-                "vermelho",
-            )
-            msg_print(f"\n📄  Tentando importar o arquivo {ARQUIVO_CSV.name}.")
+            log_event(LOG_LOAD, message="Arquivo JSON não encontrado. Tentando importar do CSV inicial")
 
-            registrar_log(
-                LOG_CARREGAR,
-                mensagem="Arquivo JSON não encontrado. Tentando importar do CSV inicial",
-            )
+            # Verifica se o arquivo CSV existe e contém dados
+            if CSV_FILE.exists() and CSV_FILE.is_file() and CSV_FILE.stat().st_size > 0:
+                log_event(LOG_LOAD, message=f"Arquivo {CSV_FILE.name} encontrado. Solicitando importação do CSV")
+                import_csv(employee_db)
 
-            # Verifica se o arquivo CSV existe e se não está vazio
-            if (
-                ARQUIVO_CSV.exists()
-                and ARQUIVO_CSV.is_file()
-                and ARQUIVO_CSV.stat().st_size > 0
-            ):
-                # Existe e tem dados | Importar dados do CSV
-                registrar_log(
-                    LOG_CARREGAR,
-                    mensagem=f"Arquivo {ARQUIVO_CSV.name} encontrado. Solicitando importação do CSV",
-                )
-                importar_csv(db_Funcionarios)
+            else:
+                show_message(f"\n⚠️ ATENÇÃO:\n('{JSON_FILE.name}' e '{CSV_FILE.name}') não encontrados!", "red")
+                show_message("\n💻 O sistema iniciará sem dados carregados.")
 
-            else:  # Não existe ou não tem dados
-
-                msg_print(
-                    f"\n⚠️  ATENÇÃO:\n('{ARQUIVO_JSON.name}' e \n'{ARQUIVO_CSV.name}\n')  não encontrados!",
-                    "vermelho",
-                )
-                msg_print("\n💻   O sistema iniciará sem dados carregados.")
-
-                registrar_log(
-                    LOG_CARREGAR,
-                    f"Arquivo JSON e CSV não encontrados. Criando arquivo JSON {ARQUIVO_JSON.name}",
-                )
+                log_event(LOG_LOAD, message=f"JSON e CSV não encontrados. Criando arquivo vazio {JSON_FILE.name}")
 
                 # Cria arquivo JSON vazio
-                with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
+                with open(JSON_FILE, "w", encoding="utf-8") as f:
                     json.dump({}, f)
+                    log_event("create_file", message=f"Arquivo {JSON_FILE.name} vazio criado para iniciar o sistema.")
 
-                    registrar_log(
-                        acao="criar_arquivo",
-                        mensagem=f"Arquivo {ARQUIVO_JSON.name} vazio criado para iniciar o sistema.",
-                    )
+    def display_employee_search(self, employee, extra_fields):
+        """
+        Exibe os dados do funcionário em modo de consulta.
 
-    def exibir_funcionario_consulta(self, funcionario, campos_extras):
+        Args:
+            employee (Employee): Funcionário a ser exibido.
+            extra_fields (list): Campos adicionais a serem exibidos.
 
-        # campos obrigatorio -> matricula / nome / cpf
+        Returns:
+            None
+        """
+        # Campos obrigatórios
+        show_field("\nMatrícula:\t", employee.registration)
+        show_field("Nome:\t\t", employee.full_name)
+        show_field("CPF:\t\t", format_cpf(employee.cpf))
 
-        f_exibir_func("\nMatrícula:\t", func.matricula)
-        f_exibir_func("Nome:\t\t", func.nome_completo)
-        f_exibir_func("CPF:\t\t", mascara_cpf(func.cpf))
-
-        if campos_extras:
-            for campo_extra in campos_extras:
-                if campo_extra == "dt_nasc":
-                    f_exibir_func("D. Nasc:\t", data_time_str(func.dt_nasc))
-                if campo_extra == "dpto_empresa":
-                    f_exibir_func("Departamento:\t", func.dpto_empresa)
-                if campo_extra == "cargo":
-                    f_exibir_func("Cargo:\t\t", func.cargo)
-                if campo_extra == "salario":
-                    f_exibir_func("Salário:\t", moeda_br(func.salario))
-                if campo_extra == "ativo":
-                    if func.ativo:
-                        status = "Ativo"
-                    else:
-                        status = "Inativo"
-                    f_exibir_func("Status:\t\t", status)
+        # Campos extras
+        if extra_fields:
+            for field in extra_fields:
+                if field == "birth_date":
+                    show_field("D. Nasc:\t", date_to_str(employee.birth_date))
+                elif field == "department":
+                    show_field("Departamento:\t", employee.department)
+                elif field == "role":
+                    show_field("Cargo:\t\t", employee.role)
+                elif field == "salary":
+                    show_field("Salário:\t", format_brl_currency(employee.salary))
+                elif field == "active":
+                    status = "Ativo" if employee.active else "Inativo"
+                    show_field("Status:\t\t", status)

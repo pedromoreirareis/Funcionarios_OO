@@ -1,34 +1,36 @@
-#   Formato mensagem dos logs
-LOGS_FORMATTER = "[ %(asctime)s ] - %(message)s"
+# Formato da mensagem dos logs
+LOG_FORMATTER = "[ %(asctime)s ] - %(message)s"
 
-#   Formato data/hora logs
-LOGS_DATE_FORMAT = "%d-%m-%Y %H:%M:%S"
+# Formato da data/hora nos logs
+LOG_DATE_FORMAT = "%d-%m-%Y %H:%M:%S"
 
-#   Constantes para ações de logs
-LOG_INSERT = "INSERIR"
-LOG_LIST = "LISTAR"
-LOG_DELETE = "APAGAR"
-LOG_SERACH = "CONSULTAR"
-LOG_PAYROOL = "FOLHA_PG"
-LOG_EXPORT = "EXPORTAR"
-LOG_IMPORT_JSON = "IMPORTAR_JSON"
-LOG_IMPORT_CSV = "IMPORTAR_CSV"
+# Constantes de ação para registro de logs CRUD
+LOG_INSERT = "INSERT"
+LOG_LIST = "LIST"
+LOG_DELETE = "DELETE"
+LOG_SEARCH = "SEARCH"
+LOG_PAYROLL = "PAYROLL"
+LOG_EXPORT = "EXPORT"
+LOG_IMPORT_JSON = "IMPORT_JSON"
+LOG_IMPORT_CSV = "IMPORT_CSV"
 
-LOG_START = "INICIALIZOU"
-LOG_END = "ENCERRANDO"
+# Constantes de ação para registro de logs Eventos sistema
+LOG_STARTUP = "STARTUP"
+LOG_SHUTDOWN = "SHUTDOWN"
 LOG_LOCALE = "LOCALE"
-LOG_LOAD = "CARREGAR"
-LOG_CREATE_JSON = "CRIAR_JSON"
-LOG_CREATE_CSV = "CRIAR_CSV"
+LOG_LOAD = "LOAD"
+LOG_CREATE_JSON = "CREATE_JSON"
+LOG_CREATE_CSV = "CREATE_CSV"
 LOG_UNKNOWN = "UNKNOWN"
 
+# Mensagens de log em português
 LOG_MESSAGES_PT = {
     "INSERT": {
         "start": "🟡 Iniciando processo de inclusão.",
         "success": "✅ Funcionário incluído com sucesso.",
         "error": "❌ Erro ao incluir funcionário.",
         "empty": "📭 Nenhum dado para incluir.",
-        "detail": lambda nome, matricula: f"✅ Funcionário '{nome}' incluído com matrícula {matricula}.",
+        "detail": lambda name, registration: f"✅ Funcionário '{name}' incluído com matrícula {registration}.",
     },
     "LIST": {
         "start": "🟡 Iniciando listagem.",
@@ -40,14 +42,14 @@ LOG_MESSAGES_PT = {
         "start": "🟡 Iniciando exclusão.",
         "success": "🗑️ Exclusão realizada com sucesso.",
         "error": "❌ Erro ao excluir item.",
-        "detail": lambda nome, matricula: f"🗑️ Funcionário '{nome}' com matrícula {matricula} foi excluído.",
+        "detail": lambda name, registration: f"🗑️ Funcionário '{name}' com matrícula {registration} foi excluído.",
     },
     "SEARCH": {
         "start": "🟡 Iniciando consulta.",
         "success": "🔍 Consulta concluída.",
         "error": "❌ Erro na consulta.",
         "empty": "📭 Nenhum resultado encontrado.",
-        "detail": lambda termo: f"🔎 Consulta realizada com o termo '{termo}'.",
+        "detail": lambda term: f"🔎 Consulta realizada com o termo '{term}'.",
     },
     "PAYROLL": {
         "start": "🟡 Gerando folha de pagamento.",
@@ -95,7 +97,6 @@ LOG_MESSAGES_PT = {
         "success": "📝 CSV criado.",
         "error": "❌ Erro ao criar CSV.",
     },
-    # 🔮 Genérico para ações futuras ou desconhecidas
     "UNKNOWN": {
         "start": "🟡 Ação desconhecida iniciada.",
         "success": "✅ Ação concluída.",
@@ -107,23 +108,23 @@ LOG_MESSAGES_PT = {
 
 def get_log_message(code: str, status: str, **kwargs) -> str:
     """
-    Retorna uma mensagem amigável em português com base no código e no tipo de evento do log.
+    Retorna uma mensagem de log amigável em português.
 
-    Parâmetros:
-        code (str): Código do log (ex: "*INSERT*", "*SEARCH*").
-        status (str): Tipo de evento (ex: "start", "success", "error").
+    Args:
+        code (str): Código da ação de log.
+        status (str): Tipo de evento (start, success, error).
         **kwargs: Parâmetros opcionais para mensagens dinâmicas.
 
-    Retorna:
-        str: Mensagem formatada para exibição ao usuário.
+    Returns:
+        str: Mensagem formatada para exibição.
     """
-    bloco = LOG_MESSAGES_PT.get(code, LOG_MESSAGES_PT["*UNKNOWN*"])
-    mensagem = bloco.get(status)
+    block = LOG_MESSAGES_PT.get(code, LOG_MESSAGES_PT["UNKNOWN"])
+    message = block.get(status)
 
-    # Se a mensagem for uma função (como um lambda), executa com os parâmetros fornecidos
-    if callable(mensagem):
-        resultado = mensagem(**kwargs)
-        return str(resultado) if resultado is not None else "ℹ️ Ação registrada."
+    # Executa função lambda se necessário
+    if callable(message):
+        result = message(**kwargs)
+        return str(result) if result is not None else "ℹ️ Ação registrada."
 
-    # Se for uma string comum, retorna diretamente
-    return str(mensagem) if mensagem is not None else "ℹ️ Ação registrada."
+    # Retorna mensagem estática
+    return str(message) if message is not None else "ℹ️ Ação registrada."

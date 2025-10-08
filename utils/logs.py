@@ -1,44 +1,50 @@
+from utils import log_constants, paths
 import logging
+import json
 
-
+# Configurações básicas do logger
 logging.basicConfig(
-    filename=ARQUIVO_LOGS,  #   Arquivo onde logs serão salvos
-    level=logging.INFO,  #   Nível minimo do log
-    datefmt=LOGS_DATE_FORMAT,  #   Formato da data e hora
-    format=LOGS_FORMATTER,  #   Formato do log
-    filemode="w",  #   Modo abertura - 'w' - sobreescreve / 'a' - insere
-    encoding="utf-8",  #   Encoding caracteres
+    filename=paths.LOG_FILE,  # Caminho do arquivo onde os logs serão salvos
+    level=logging.INFO,  # Nível mínimo de log: INFO registra eventos informativos e superiores
+    datefmt=log_constants.LOG_DATE_FORMAT,  # Formato da data/hora exibida no log
+    format=log_constants.LOG_FORMATTER,  # Formato da mensagem de log
+    filemode="a",  # Modo de escrita: 'a' adiciona ao final, 'w' sobrescreve o arquivo
+    encoding="utf-8",  # Codificação para suportar caracteres especiais
 )
 
-#   Instancia do logger configurado
-logger_msg_funcionario = logging.getLogger()
+# Instância global do logger configurado
+employee_logger = logging.getLogger()
 
 
-def registrar_log(acao, detalhe=None, mensagem=None):
+def log_event(action, detail=None, message=None):
     """
-    Registra mensagem formatada no arquivo de log.
+    Registra uma mensagem formatada no arquivo de log.
 
-    Formatação de acordo com ação realizada.
     Args:
-        acao:   tipo de evento executado
-        detalhe:    dados extras
-        mensagem:   descrição do que está acontecendo
+        action (str): Tipo de evento executado.
+        detail (any): Dados extras relacionados ao evento.
+        message (str): Descrição do que está acontecendo.
+
+    Returns:
+        bool: True se o log foi registrado com sucesso.
     """
-
-    if acao == LOG_INSERIR:
-
-        msg = f"{acao} - {json.dumps(detalhe, ensure_ascii=False)} - {mensagem}"
-
-    elif acao in [LOG_APAGAR, LOG_CONSULTAR, LOG_FOLHA]:
-
-        msg = f"{acao} - {detalhe} - {mensagem}"
-
-    elif mensagem:
-
-        msg = f"{acao} - {mensagem}"
-
+    # Monta a mensagem de log conforme o tipo de ação
+    if action == log_constants.LOG_INSERT:
+        # Para inserção, serializa os detalhes como JSON
+        msg = f"{action} - {json.dumps(detail, ensure_ascii=False)} - {message}"
+    elif action in [
+        log_constants.LOG_DELETE,
+        log_constants.LOG_SEARCH,
+        log_constants.LOG_PAYROLL,
+    ]:
+        # Para ações específicas, inclui detalhes e mensagem
+        msg = f"{action} - {detail} - {message}"
+    elif message:
+        # Se houver apenas mensagem, inclui junto à ação
+        msg = f"{action} - {message}"
     else:
+        # Caso não haja detalhes nem mensagem, registra apenas a ação
+        msg = action
 
-        msg = acao
-
-    return logger_msg_funcionario.info(msg)
+    # Escreve a mensagem no arquivo de log
+    return employee_logger.info(msg)
